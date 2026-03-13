@@ -1,0 +1,4 @@
+build_from:
+  aarch64: "mcr.microsoft.com/playwright:v1.58.2-noble"
+  amd64: "mcr.microsoft.com/playwright:v1.58.2-noble"
+args: {}
