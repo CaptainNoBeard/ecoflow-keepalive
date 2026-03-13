@@ -1,5 +1,5 @@
 name: "EcoFlow Keepalive"
-desciption: "Headless keep-alive for EcoFlow user portal"
+description: "Headless keep-alive for EcoFlow user portal"
 version: "1.0.0"
 slug: "ecoflow_keepalive"
 init: false
