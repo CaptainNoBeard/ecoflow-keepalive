@@ -16,3 +16,4 @@ startup: application
 boot: auto
 map:
   - config:ro
+image: true
