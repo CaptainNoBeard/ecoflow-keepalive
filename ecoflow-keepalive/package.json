@@ -1,6 +1,6 @@
 {
   "name": "ecoflow-keepalive",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Headless keep-alive for EcoFlow user portal",
   "main": "keepalive.js",
   "scripts": {

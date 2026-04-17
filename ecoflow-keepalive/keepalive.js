@@ -1,5 +1,10 @@
 const { chromium } = require('playwright');
 
+function log(...args) {
+  const now = new Date().toLocaleString('sv-SE', { hour12: false });
+  console.log(`[${now}]`, ...args);
+}
+
 const PORTAL_URL = 'https://user-portal.ecoflow.com/';
 const LOGIN_URL = 'https://user-portal.ecoflow.com/user/eu/en/login';
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000;  // 5 minutes
@@ -52,7 +57,7 @@ async function main() {
   const password = process.env.ECOFLOW_PASSWORD;
 
   if (!email || !password) {
-    console.error('Set ECOFLOW_EMAIL and ECOFLOW_PASSWORD environment variables');
+    log('Set ECOFLOW_EMAIL and ECOFLOW_PASSWORD environment variables');
     process.exit(1);
   }
 
@@ -87,8 +92,9 @@ async function main() {
       if (!isDebug) {
         await page.route('**/*', (route) => {
           const type = route.request().resourceType();
-          // Block expensive resources to save CPU, but allow XHR/Fetch/WebSockets
-          if (['image', 'media', 'font', 'stylesheet'].includes(type)) {
+          // Block expensive resources to save CPU, but allow XHR/Fetch/WebSockets/Stylesheets
+          // We allow stylesheets because some SPAs need them for visibility checks
+          if (['image', 'media', 'font'].includes(type)) {
             route.abort();
           } else {
             route.continue();
@@ -103,7 +109,7 @@ async function main() {
 
       // Always login: each iteration uses a fresh browser with no session
       await login(page, email, password);
-      console.log(new Date().toISOString(), 'Logged in');
+      log('Logged in');
 
       // Go to dashboard and keep session active
       await page.goto(PORTAL_URL, { waitUntil: 'domcontentloaded' });
@@ -113,7 +119,7 @@ async function main() {
       }
 
       await page.goto(PORTAL_URL + '#/dashboard', { waitUntil: 'domcontentloaded' });
-      console.log(new Date().toISOString(), 'Dashboard loaded, session active');
+      log('Dashboard loaded, session active');
 
       // Keep page open, refresh periodically, restart after 23 hours to preempt 24h logout
       const SESSION_MAX_MS = 23 * 60 * 60 * 1000; // 23 hours
@@ -121,26 +127,26 @@ async function main() {
       while (true) {
         await sleep(REFRESH_INTERVAL_MS);
         if (!(await isLoggedIn(page))) {
-          console.log(new Date().toISOString(), 'Session lost, breaking loop to relogin');
+          log('Session lost, breaking loop to relogin');
           break;
         }
 
         if (Date.now() - sessionStart >= SESSION_MAX_MS) {
-          console.log(new Date().toISOString(), 'Session reached 23h limit, restarting browser context');
+          log('Session reached 23h limit, restarting browser context');
           break;
         }
 
         await page.reload({ waitUntil: 'domcontentloaded' });
-        console.log(new Date().toISOString(), 'Page refreshed');
+        log('Page refreshed');
       }
     } catch (err) {
-      console.error(new Date().toISOString(), 'Error:', err.message);
+      log('Error:', err.message);
       if (page && !page.isClosed()) {
         try {
           await page.screenshot({ path: 'error.png', fullPage: true });
-          console.log(new Date().toISOString(), 'Saved inner error screenshot to error.png');
+          log('Saved inner error screenshot to error.png');
         } catch (e) {
-          console.error(new Date().toISOString(), 'Could not save screenshot:', e.message);
+          log('Could not save screenshot:', e.message);
         }
       }
     } finally {
@@ -148,9 +154,9 @@ async function main() {
       page = null;
     }
 
-    console.log(new Date().toISOString(), 'Restarting in 60s...');
+    log('Restarting in 60s...');
     await sleep(60000);
   }
 }
 
-main().catch(console.error);
+main().catch(log);
