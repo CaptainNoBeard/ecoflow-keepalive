@@ -5,6 +5,11 @@ function log(...args) {
   console.log(`[${now}]`, ...args);
 }
 
+function logError(...args) {
+  const now = new Date().toLocaleString('sv-SE', { hour12: false });
+  console.error(`[${now}]`, ...args);
+}
+
 const PORTAL_URL = 'https://user-portal.ecoflow.com/';
 const LOGIN_URL = 'https://user-portal.ecoflow.com/user/eu/en/login';
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000;  // 5 minutes
@@ -57,7 +62,7 @@ async function main() {
   const password = process.env.ECOFLOW_PASSWORD;
 
   if (!email || !password) {
-    log('Set ECOFLOW_EMAIL and ECOFLOW_PASSWORD environment variables');
+    logError('Set ECOFLOW_EMAIL and ECOFLOW_PASSWORD environment variables');
     process.exit(1);
   }
 
@@ -140,13 +145,13 @@ async function main() {
         log('Page refreshed');
       }
     } catch (err) {
-      log('Error:', err.message);
+      logError('Error:', err.message);
       if (page && !page.isClosed()) {
         try {
           await page.screenshot({ path: 'error.png', fullPage: true });
           log('Saved inner error screenshot to error.png');
         } catch (e) {
-          log('Could not save screenshot:', e.message);
+          logError('Could not save screenshot:', e.message);
         }
       }
     } finally {
@@ -159,4 +164,4 @@ async function main() {
   }
 }
 
-main().catch(log);
+main().catch(logError);
