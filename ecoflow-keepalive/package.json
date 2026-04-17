@@ -1,6 +1,6 @@
 {
   "name": "ecoflow-keepalive",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Headless browser automation to keep EcoFlow session active",
   "main": "keepalive.js",
   "scripts": {

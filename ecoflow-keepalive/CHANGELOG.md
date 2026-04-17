@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+- Removed deprecated `build.yaml` to silence Supervisor warnings.
+- Fixed version consistency.
+
 ## 1.0.3
 - Restored `console.error` for error output channels to fix Home Assistant log viewer issues.
 
