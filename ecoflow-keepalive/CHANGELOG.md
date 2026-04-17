@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.3
+- Restored `console.error` for error output channels to fix Home Assistant log viewer issues.
+
 ## 1.0.2
 - Implemented ISO-style (YYYY-MM-DD HH:mm:ss) local timestamps in logs.
 - Re-enabled stylesheets in headless mode to fix session stability issues.
