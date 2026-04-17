@@ -67,8 +67,8 @@ async function main() {
       browser = await chromium.launch({
         headless: !isDebug,
         args: [
-          '--no-sandbox', 
-          '--disable-setuid-sandbox', 
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
           '--disable-dev-shm-usage',
           '--disable-animations',
           '--disable-canvas-aa',
@@ -77,7 +77,7 @@ async function main() {
       });
 
       const context = await browser.newContext({
-        viewport: { width: 1280, height: 720 },
+        viewport: { width: 1280, height: 1000 },
         userAgent:
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       });
@@ -117,14 +117,14 @@ async function main() {
 
       // Keep page open, refresh periodically, restart after 23 hours to preempt 24h logout
       const SESSION_MAX_MS = 23 * 60 * 60 * 1000; // 23 hours
-      
+
       while (true) {
         await sleep(REFRESH_INTERVAL_MS);
         if (!(await isLoggedIn(page))) {
           console.log(new Date().toISOString(), 'Session lost, breaking loop to relogin');
           break;
         }
-        
+
         if (Date.now() - sessionStart >= SESSION_MAX_MS) {
           console.log(new Date().toISOString(), 'Session reached 23h limit, restarting browser context');
           break;

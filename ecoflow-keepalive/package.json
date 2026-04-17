@@ -8,6 +8,6 @@
     "keepalive": "node keepalive.js"
   },
   "dependencies": {
-    "playwright": "1.58.2"
+    "playwright": "^1.58.2"
   }
 }
